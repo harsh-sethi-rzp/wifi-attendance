@@ -16,6 +16,7 @@ app: build
 	cp $(BINARY) $(MACOS_DIR)/$(BINARY)
 	cp -r assets $(MACOS_DIR)/assets
 	cp Info.plist $(BUNDLE)/Info.plist
+	codesign --force --deep --sign - $(APP)
 	@echo "Built $(APP)"
 
 install: app
