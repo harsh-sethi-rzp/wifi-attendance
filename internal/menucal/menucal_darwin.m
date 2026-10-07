@@ -8,14 +8,25 @@ static const CGFloat kCell = 30, kRow = 28, kDot = 24, kPad = 12, kTop = 4, kHea
 @property (copy) NSString *cells;
 @end
 
+static NSColor *hex(unsigned rgb) {
+  return [NSColor colorWithSRGBRed:((rgb >> 16) & 0xFF) / 255.0
+                             green:((rgb >> 8) & 0xFF) / 255.0
+                              blue:(rgb & 0xFF) / 255.0
+                             alpha:1];
+}
+
+// Soft pastel palette. The fills are light in both light and dark mode, so the
+// day number on them is always dark (see drawRect:).
 static NSColor *fillColor(unichar c) {
   switch (c) {
-    case 'p': return NSColor.systemGreenColor;
-    case 'h': return NSColor.systemPurpleColor;
-    case 'l': return NSColor.systemOrangeColor;
+    case 'p': return hex(0xBEDAE3); // attended
+    case 'h': return hex(0xC9E4CA); // holiday
+    case 'l': return hex(0xFED5CF); // leave
   }
   return nil;
 }
+
+static NSColor *absentColor(void) { return hex(0xD3C7E6); }
 
 static void drawText(NSString *s, NSRect r, NSColor *color, CGFloat size, NSTextAlignment align) {
   NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
@@ -32,7 +43,7 @@ static void drawText(NSString *s, NSRect r, NSColor *color, CGFloat size, NSText
 }
 
 // drawDot draws the marker for a cell state: filled for present, holiday and leave,
-// a red ring for absent.
+// a lavender ring for absent.
 static void drawDot(unichar c, NSRect r) {
   NSColor *fill = fillColor(c);
   if (fill) {
@@ -40,8 +51,8 @@ static void drawDot(unichar c, NSRect r) {
     [[NSBezierPath bezierPathWithOvalInRect:r] fill];
   } else if (c == 'a') {
     NSBezierPath *ring = [NSBezierPath bezierPathWithOvalInRect:NSInsetRect(r, 0.75, 0.75)];
-    ring.lineWidth = 1.5;
-    [NSColor.systemRedColor setStroke];
+    ring.lineWidth = 2;
+    [absentColor() setStroke];
     [ring stroke];
   }
 }
@@ -71,7 +82,7 @@ static void drawDot(unichar c, NSRect r) {
     drawDot(c, NSInsetRect(cell, (kCell - kDot) / 2, (kRow - kDot) / 2));
 
     NSColor *text = NSColor.labelColor;
-    if (fillColor(c)) text = NSColor.whiteColor;
+    if (fillColor(c)) text = hex(0x3A3A3C);
     else if (c == 'w') text = NSColor.tertiaryLabelColor;
     else if (c == 'n') text = NSColor.secondaryLabelColor;
     drawText([NSString stringWithFormat:@"%d", day], cell, text, 12, NSTextAlignmentCenter);
