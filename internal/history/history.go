@@ -45,7 +45,7 @@ func Build(days []string, off policy.OffDays, now time.Time, loc *time.Location,
 
 	attended := make(map[string]bool, len(days))
 	first := today
-	for _, d := range days {
+      for _, d := range days {
               if _, err := time.Parse(isoDate, d); err != nil {
                       continue // skip a malformed date instead of panicking on first[:7]
               }
