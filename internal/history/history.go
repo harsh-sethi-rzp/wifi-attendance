@@ -45,15 +45,15 @@ func Build(days []string, off policy.OffDays, now time.Time, loc *time.Location,
 
 	attended := make(map[string]bool, len(days))
 	first := today
-      for _, d := range days {
-              if _, err := time.Parse(isoDate, d); err != nil {
-                      continue // skip a malformed date instead of panicking on first[:7]
-              }
-              attended[d] = true
-              if d < first {
-                      first = d
-              }
-      }
+	for _, d := range days {
+		if _, err := time.Parse(isoDate, d); err != nil {
+			continue // skip a malformed date instead of panicking on first[:7]
+		}
+		attended[d] = true
+		if d < first {
+			first = d
+		}
+	}
 	// A day actually spent in office stays a working day even if it was also
 	// marked as a holiday or leave — the same rule the menu bar uses.
 	working := make(policy.OffDays, len(off))
